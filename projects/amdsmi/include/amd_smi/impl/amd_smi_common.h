@@ -106,6 +106,13 @@ const std::map<smi_nic_status_t, amdsmi_status_t> ainic_status_map = {
     {SMI_NIC_STATUS_DRIVER_NOT_LOADED, AMDSMI_STATUS_DRIVER_NOT_LOADED}};
 amdsmi_status_t ainic_to_amdsmi_status(smi_nic_status_t status);
 
+// RDMA device info is optional for an AI-NIC; a missing RDMA/ionic driver or an
+// empty result must not abort discovery of the rest of the NIC.
+inline bool nic_rdma_status_is_fatal(smi_nic_status_t status) {
+  return status != SMI_NIC_STATUS_SUCCESS && status != SMI_NIC_STATUS_NO_DATA &&
+         status != SMI_NIC_STATUS_DRIVER_NOT_LOADED;
+}
+
 /**
  *  AMDSMI Library init reference count (amdsmi_init / amdsmi_shut_down)
  *      - Lives in amd_smi_common.cc
