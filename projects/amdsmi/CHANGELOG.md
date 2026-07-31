@@ -79,6 +79,10 @@ GPU: 0
   - New enum: `amdsmi_accelerator_partition_mem_alloc_mode_t` (`AMDSMI_ACCELERATOR_PARTITION_MEM_ALLOC_CAPPING`, `AMDSMI_ACCELERATOR_PARTITION_MEM_ALLOC_ALL`).
   - Supersedes the equivalent `compute_partition` memory allocation mode APIs, which are now deprecated.
 
+- **Added unified `amdsmi_get_link_topology()` API (baremetal and host)**.  
+  - New C API `amdsmi_get_link_topology()` returns a single `amdsmi_link_topology_t` aggregating link weight, link status, link type, hop count, and framebuffer-sharing capability between two GPUs.
+  - New Python API `amdsmi_get_link_topology()` exposes the same data, mirroring the host interface for API parity.
+
 ### Changed
 
 - **Bumped the library major version to 27.0.0** (breaking).  
