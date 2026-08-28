@@ -104,17 +104,24 @@ do_host_tests() {
     --gtest_color=no "$@" 2>&1 | "${stamp[@]}" | tee "$LOG_FILE"
 }
 
-# Run the kernel-count guard pytest suite (test/kernel-count) in a local venv so
-# the lean host-test image needs no system pytest. See that dir's README.
-do_guards() {
-  echo "==> Kernel-count guards (pytest: test/kernel-count)"
-  local gd="$RCCL_ROOT/test/kernel-count"
+# Run one CPU-only pytest guard suite in a local venv, so the lean host-test
+# image needs no system pytest. See each guard directory's README.
+run_pytest_guard() {
+  local label="$1" gd="$RCCL_ROOT/$2"
+  echo "==> $label (pytest: $2)"
   local venv="$gd/venv"
   if [ ! -x "$venv/bin/pytest" ]; then
     python3 -m venv "$venv"
     "$venv/bin/pip" install -q --disable-pip-version-check -r "$gd/requirements.txt"
   fi
   "$venv/bin/python" -m pytest "$gd/tests" -v
+}
+
+# Every CPU-only guard suite, in order. `set -e` is on, so the first failing
+# guard gates the phase rather than letting later ones mask it.
+do_guards() {
+  run_pytest_guard "Kernel-count guards" test/kernel-count
+  run_pytest_guard "NetIbMPI assertion guards" test/netibmpi-guards
 }
 
 # The `run` phase aggregates every check the host-test pipeline executes: the

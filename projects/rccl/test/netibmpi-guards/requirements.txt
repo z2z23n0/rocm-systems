@@ -1,0 +1,4 @@
+# Testing dependencies for the NetIbMPI assertion guards.
+# The guard itself only uses the Python standard library; pytest is the only
+# external dependency (test framework + JUnit XML for the test_runner harness).
+pytest
